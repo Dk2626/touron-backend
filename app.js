@@ -24,6 +24,8 @@ const BannerRoute = require("./routes/BannerRoutes");
 const StateRoute = require("./routes/StateRoute");
 const DomesticCityRoute = require("./routes/DomesticCityRoute");
 const CompanyStats = require("./routes/CompanyStats");
+const SendHotelEmail = require("./routes/SendHotelTickets");
+const SendFlightEmail = require("./routes/SendFlightTickets");
 const app = express();
 
 // for production only
@@ -55,8 +57,12 @@ app.use(StateRoute);
 app.use(BannerRoute);
 app.use(DomesticCityRoute);
 app.use(CompanyStats);
-const mongodbUri =
-  "mongodb+srv://vicky:aamecvicky123@cluster0-knxey.mongodb.net/city?retryWrites=true&w=majority";
+app.use(SendHotelEmail);
+app.use(SendFlightEmail);
+const mongodbUri = process.env.MONGODB_URI;
+
+
+
 
 mongoose.connect(mongodbUri, {
   useNewUrlParser: true,
