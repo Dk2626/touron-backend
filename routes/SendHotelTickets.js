@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: "reservations@touron.in",
-    pass: process.env.EMAIL_PASS,
+    pass: 'u0FfuR3Kx29Z',
   },
 });
 
