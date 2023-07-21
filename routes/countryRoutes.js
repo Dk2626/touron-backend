@@ -1,25 +1,25 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const express = require("express");
+const express = require('express');
 
 const router = express.Router();
 
-const multer = require("multer");
+const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads");
+    cb(null, './uploads');
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now() + file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + file.originalname);
   },
 });
 
 const fileFilter = (req, file, cb) => {
   if (
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
   ) {
     cb(null, true);
   } else {
@@ -33,10 +33,10 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-const Country = mongoose.model("Country");
+const Country = mongoose.model('Country');
 
 // get City
-router.get("/country", async (req, res) => {
+router.get('/country', async (req, res) => {
   if (req.query.page && req.query.pageSize) {
     const pageSize = parseInt(req.query.pageSize);
     const page = parseInt(req.query.page);
@@ -44,26 +44,26 @@ router.get("/country", async (req, res) => {
     const country = await Country.find()
       .skip((page - 1) * pageSize)
       .limit(pageSize);
-    console.log("City route called", country.length);
+    console.log('City route called', country.length);
 
     res.send(country);
   } else {
     const country = await Country.find();
 
-    console.log("City route called", country.length);
+    console.log('City route called', country.length);
 
     res.send(country);
   }
 });
 
-router.get("/country/:name", async (req, res) => {
+router.get('/country/:name', async (req, res) => {
   console.log(req.params);
   const country = await Country.find({ countryName: req.params.name });
   res.send(country);
 });
 
 //Post city
-router.post("/country", async (req, res) => {
+router.post('/country', async (req, res) => {
   try {
     const country = new Country(req.body);
     console.log(`country`, country);
@@ -74,8 +74,8 @@ router.post("/country", async (req, res) => {
   }
 });
 router.post(
-  "/countrys",
-  upload.single("countryImage"),
+  '/countrys',
+  upload.single('countryImage'),
 
   async (req, res) => {
     let country = new Country();
@@ -95,22 +95,23 @@ router.post(
       timeZone: req.body.timeZone,
       bestTimeToVisit: req.body.bestTimeToVisit,
     };
-    country.countryImage = `https://touron-api.herokuapp.com/${req.file.path}`;
+    // country.countryImage = `https://touron-api.herokuapp.com/${req.file.path}`;
+    country.countryImage = `https://us-central1-touronapp-248e4.cloudfunctions.net/api/${req.file.path}`;
     console.log(`req.body`, req.body);
     console.log(`req.body`, country);
     console.log(`req.body`, req.file);
     country.save();
-    res.send("success");
+    res.send('success');
   }
 );
 
 //single city to edit
-router.get("/country/edit/:id", async (req, res) => {
+router.get('/country/edit/:id', async (req, res) => {
   console.log(req.body);
   const country = await Country.findById({ _id: req.params.id });
   res.send(country);
 });
-router.get("/country/:id", async (req, res) => {
+router.get('/country/:id', async (req, res) => {
   console.log(req.body);
   const country = await Country.findById({ _id: req.params.id });
   res.send(country);
@@ -118,7 +119,7 @@ router.get("/country/:id", async (req, res) => {
 
 // Update City
 
-router.post("/country/edit/:id", async (req, res) => {
+router.post('/country/edit/:id', async (req, res) => {
   // console.log(`running`);
   // console.log(`req.file`, req.file);
   // console.log(`req.body`, req.body);
@@ -150,7 +151,7 @@ router.post("/country/edit/:id", async (req, res) => {
 
 //Delete by id
 
-router.post("/country/delete/:id", async (req, res) => {
+router.post('/country/delete/:id', async (req, res) => {
   const country = await Country.findByIdAndDelete({ _id: req.params.id });
   res.send(country);
 });
